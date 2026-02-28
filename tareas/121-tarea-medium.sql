@@ -143,6 +143,24 @@ select
 from comments a
 where comment_parent_id is null;
 
+-- ** 11. Avanzado (otra forma)
+-- Listar todos los comentarios principales (no respuestas) 
+-- Y crear una columna adicional "replies" con las respuestas en formato JSON   
+
+SELECT a.comment_id,
+       a.post_id,
+	   a.user_id,
+       a.content,
+       json_agg(
+         json_build_object(
+           'user', b.user_id,'commentario', b.content
+           
+         )
+       ) AS replies
+FROM "comments" a
+LEFT JOIN "comments" b ON b.comment_parent_id=a.comment_id
+GROUP BY a.comment_id,a.content,a.post_id,a.user_id
+
 
 
 
